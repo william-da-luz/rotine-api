@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const signToken = (user) => { //passar o objeto user inteiro
-  return jwt.sign({ id: user }, process.env.JWT_SECRET, { expiresIn: '1h' });//passar o user ao inves de user.id
+  return jwt.sign({ user}, process.env.JWT_SECRET, { expiresIn: '1h' });//passar o user ao inves de user.id
 };
 
 const verifyToken = (token) => {

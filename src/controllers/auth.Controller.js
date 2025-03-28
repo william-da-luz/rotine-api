@@ -14,7 +14,7 @@ const register = async (req, res) => {
       },
     });
 
-    const token = signToken(user.id);
+    const token = signToken(user);
     res.status(201).json({ token });
   } catch (error) {
     console.log(error);
@@ -31,7 +31,7 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = signToken(user.id);
+    const token = signToken(user);
     res.json({ token });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
