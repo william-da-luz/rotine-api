@@ -1,9 +1,29 @@
 const bcrypt = require('bcryptjs');
 const prisma = require('../config/database');
 const { signToken, verifyToken } = require('../helper/jwt.js');
+const { z } = require('zod');
+const { request } = require('express');
+
+//schema de validation Zod
+const requestBody = z.object({
+  username: z.string({ required_error: 'Username is required' }),
+  password: z.string({ required_error: 'Password is required' }),
+})
 
 const register = async (req, res) => {
   const { username, password } = req.body;
+
+  //zod validation
+  try {
+    requestBody.parse({ username, password });
+  } catch (error) {
+    console.log('Validation error:', error); // Debug para ver o erro exato
+    if (error instanceof z.ZodError) {
+      const errorMessage = error.errors[0].message; // Só acessa se for ZodError
+      return res.status(400).json({ message: errorMessage });
+    }
+    return res.status(400).json({ message: 'Invalid request data' });
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -24,6 +44,17 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { username, password } = req.body;
+
+  try {
+    requestBody.parse({ username, password });
+  } catch (error) {
+    console.log('Validation error:', error);
+    if (error instanceof z.ZodError) {
+      const errorMessage = error.errors[0].message;
+      return res.status(400).json({ message: errorMessage });
+    }
+    return res.status(400).json({ message: 'Invalid request data' });
+  }
 
   try {
     const user = await prisma.user.findUnique({ where: { username } });
