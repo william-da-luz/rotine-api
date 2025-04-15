@@ -6,9 +6,9 @@ class NoteService {
         try {
             const note = await prisma.note.create({
                 data: {
-                    title: data.title,
-                    content: data.content,
-                    category: data.category,
+                    "title": data.title,
+                    "description": data.description,
+                    "category": data.category,
                 },
             });
             return note;
