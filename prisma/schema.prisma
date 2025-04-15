@@ -19,3 +19,10 @@ model User {
   password  String
   createdAt DateTime @default(now())
 }
+
+model Note {
+  id            Int      @id @default(autoincrement()) //esta eh a primary key, sempre teras um id, indepentende so username
+  title         String   
+  description   String
+  category      String
+}
