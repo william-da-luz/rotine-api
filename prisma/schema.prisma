@@ -18,11 +18,14 @@ model User {
   username  String   @unique
   password  String
   createdAt DateTime @default(now())
+  note      Note[]
 }
 
 model Note {
-  id            Int      @id @default(autoincrement()) //esta eh a primary key, sempre teras um id, indepentende so username
-  title         String   
-  description   String
-  category      String
+  id          Int      @id @default(autoincrement())
+  title       String   
+  description String
+  category    String
+  userId      Int?     // Torna userId opcional temporariamente
+  user        User?    @relation(fields: [userId], references: [id])
 }
