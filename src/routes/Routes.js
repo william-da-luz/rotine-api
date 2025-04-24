@@ -12,4 +12,6 @@ router.get('/me', getMe);
 router.get('/notes', authMiddleware, NotesController.findAll)
 router.post('/notes', authMiddleware, NotesController.create);
 
+router.delete('/notes/:id',authMiddleware, NotesController.delete)
+
 module.exports = router;
