@@ -9,7 +9,6 @@ const authMiddleware = (req, res, next) => {
 
     try {
         const decoded = jwt.verifyToken(token);
-        console.log(decoded)
         req.userId = decoded.user.id; // Adiciona o userId ao request
         next();
     } catch (error) {

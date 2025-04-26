@@ -9,7 +9,10 @@ const router = express.Router();
 router.post('/register', register);
 router.post('/login', login);
 router.get('/me', getMe);
+
 router.get('/notes', authMiddleware, NotesController.findAll)
 router.post('/notes', authMiddleware, NotesController.create);
+router.delete('/notes/:id',authMiddleware, NotesController.delete)
+router.put('/notes/:id', authMiddleware, NotesController.update);
 
 module.exports = router;

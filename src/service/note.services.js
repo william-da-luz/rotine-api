@@ -32,6 +32,51 @@ class NoteService {
             throw new Error(`Erro ao listar notas: ${error.message}`);
         }
     }
+
+    async delete(id, userId) {
+        try {
+            const note = await prisma.note.findUnique({
+                where: { id: parseInt(id), userId},
+            });
+
+            if(!note) {
+                throw new Error('Impossible to delete note')
+            }
+
+            await prisma.note.delete({
+                where: { id: parseInt(id)},
+            });
+        } catch (error) {
+            console.error(error);
+            
+            throw new Error('Error to delete note:', error.message)
+        }
+
+    }
+
+    async update(id, data, userId) {
+        try {
+            const note = await prisma.note.findUnique({
+                where: { id: parseInt(id), userId},
+            });
+
+            if (!note) {
+                throw new Error('Nota não encontrada para atualização.');
+            }
+
+            const updatedNote = await prisma.note.update({
+                where: { id: parseInt(id)},
+                data: {
+                    "title": data.title,
+                    "description": data.description,
+                    "category": data.category,
+                }
+            });
+            return updatedNote;
+        } catch (error) {  
+            throw new Error(`Erro ao atualizar nota: ${error.message}`);
+        }
+    }
 }
 
 module.exports = new NoteService();

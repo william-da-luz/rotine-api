@@ -10,6 +10,12 @@ const createNoteValidationSchema = z.object({
     category: z.string({ required_error: 'category is required' }),
 }).strict()
 
+const updateNoteValidationSchema = z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    category: z.string().optional(),
+}).strict()
+
 class NotesController {
     async create(req, res) {
         try {
@@ -41,6 +47,34 @@ class NotesController {
             });
         } catch (erro) {
             res.status(500).json({ message: 'Error to list notes', error: erro.message })
+        }
+    }
+
+    async delete(req, res) {
+        try {
+            const id = req.params.id; //catch the id by the params there are at the tourte
+            const notes = await NoteService.delete(id)
+            res.status(200).json({
+                message: 'Note deleted',
+            })
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        };
+    };
+
+    async update(req, res) {
+        try{
+            const id = req.params.id; 
+            const validatedData = updateNoteValidationSchema.parse(req.body)
+
+            const updatedNote = await NoteService.update(id, validatedData, req.userId);
+
+            res.status(200).json({
+                message: 'Note updated',
+            })
+            
+        } catch (error) {
+            res.status(500).json({message: error.message})
         }
     }
 }
