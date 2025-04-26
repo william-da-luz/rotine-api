@@ -33,8 +33,16 @@ class NoteService {
         }
     }
 
-    async delete(id) {
+    async delete(id, userId) {
         try {
+            const note = await prisma.note.findUnique({
+                where: { id: parseInt(id), userId},
+            });
+
+            if(!note) {
+                throw new Error('Impossible to delete note')
+            }
+
             await prisma.note.delete({
                 where: { id: parseInt(id)},
             });
@@ -45,25 +53,28 @@ class NoteService {
         }
 
     }
-    async update(id, data) {
-        try {
 
+    async update(id, data, userId) {
+        try {
             const note = await prisma.note.findUnique({
-                where: { id: parseInt(id) },
+                where: { id: parseInt(id), userId},
             });
 
+            if (!note) {
+                throw new Error('Nota não encontrada para atualização.');
+            }
+
             const updatedNote = await prisma.note.update({
-                where: { id: parseInt(id) },
+                where: { id: parseInt(id)},
                 data: {
                     "title": data.title,
                     "description": data.description,
                     "category": data.category,
-                    "userId": userId,
                 }
             });
             return updatedNote;
-        } catch (error) {
-
+        } catch (error) {  
+            throw new Error(`Erro ao atualizar nota: ${error.message}`);
         }
     }
 }
