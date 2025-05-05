@@ -74,9 +74,51 @@ class NoteService {
             });
             return updatedNote;
         } catch (error) {  
-            throw new Error(`Erro ao atualizar nota: ${error.message}`);
+            throw new Error(`Error to update notes  ${error.message}`);
         }
     }
+
+
+    async search (query, userId) {
+        try {
+            const notes = await prisma.note.findMany({
+                where: {
+                    userId,
+                    OR: [
+                       {
+                        title: {
+                            contains: query,
+                        },
+                       },
+
+                       {
+                        description: {
+                            contains: query,
+                        },
+                       },
+
+                       {
+                        category:{
+                            contains: query,
+                        },
+                       }
+                    ],
+                    
+
+                //   contains: {
+                //     "title": query.title,
+                //     "description": query.description,
+                //     "category": query.category
+                //   }
+                }
+            })
+            return notes;
+        } catch (error) {
+
+        }
+
+    }
+    
 }
 
 module.exports = new NoteService();

@@ -4,6 +4,10 @@ const NoteService = require('../service/note.services')
 const { z } = require('zod');
 
 
+const searchNoteSchema = z.object({
+    q: z.string({ required_error: 'need something to search' }).min(1, { message: 'O parâmetro de busca não pode estar vazio' }),
+}).strict()
+
 const createNoteValidationSchema = z.object({
     title: z.string({ required_error: 'Title is required' }),
     description: z.string({ required_error: 'description is required' }),
@@ -75,6 +79,25 @@ class NotesController {
             
         } catch (error) {
             res.status(500).json({message: error.message})
+        }
+    }
+
+    async search(req, res) {
+        try {
+            const { q } = searchNoteSchema.parse(req.query);
+
+            const query = req.query.q;
+            console.log(query)
+
+            const notes = await NoteService.search(query, req.userId)
+
+            res.status(200).json({
+                notes,
+                message: `All the notes with ${query}`
+            })
+
+        } catch (error) {
+           throw new Error(`Error to find note`)
         }
     }
 }
